@@ -1,0 +1,1012 @@
+/* ============================================================
+   THIKASH J — PREMIUM SCRAPBOOK PORTFOLIO
+   A handcrafted, paper-collage aesthetic for an AI/ML Engineer
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Architects+Daughter&family=Special+Elite&family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600;700&family=Boogaloo&family=Lilita+One&family=Oswald:wght@700&family=Abril+Fatface&family=Righteous&family=Permanent+Marker&family=Fredoka+One&family=Black+Han+Sans&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  --paper-ivory:   #FAF7F0;
+  --paper-white:   #FEFEFE;
+  --paper-beige:   #F0EAD6;
+  --paper-cream:   #FDF8ED;
+  --charcoal:      #2C2C2A;
+  --navy:          #1A2742;
+  --blue:          #2860C8;
+  --blue-light:    #4A80E4;
+  --orange:        #E8621A;
+  --orange-light:  #FF8040;
+  --sticky-yellow: #FFF5A0;
+  --sticky-pink:   #FFD6E8;
+  --sticky-blue:   #D0E8FF;
+  --sticky-green:  #D6F5D6;
+
+  --shadow-sm:  2px 3px 8px rgba(0,0,0,0.12);
+  --shadow-md:  4px 8px 20px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.08);
+  --shadow-lg:  6px 14px 35px rgba(0,0,0,0.18), 0 3px 8px rgba(0,0,0,0.10);
+  --shadow-pol: 3px 3px 12px rgba(0,0,0,0.20), 6px 8px 25px rgba(0,0,0,0.14);
+
+  --hand:       'Caveat', cursive;
+  --sketch:     'Architects Daughter', cursive;
+  --type:       'Special Elite', monospace;
+  --kalam:      'Kalam', cursive;
+  --body:       'Inter', sans-serif;
+}
+
+/* ── Reset & Base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scrollbar-width: none; -ms-overflow-style: none; }
+::-webkit-scrollbar { display: none; }
+
+body {
+  font-family: var(--body);
+  color: var(--charcoal);
+  overflow-x: hidden;
+  min-height: 100vh;
+  /* ── GRID PAPER BACKGROUND ── */
+  background-color: #F5F2EB;
+  background-image:
+    /* Fine blue grid lines */
+    linear-gradient(rgba(60, 120, 210, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(60, 120, 210, 0.10) 1px, transparent 1px),
+    /* Slightly bolder major grid every 5 cells */
+    linear-gradient(rgba(60, 120, 210, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(60, 120, 210, 0.18) 1px, transparent 1px),
+    /* Warm paper base gradient */
+    radial-gradient(ellipse at 20% 10%, rgba(255, 248, 220, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 90%, rgba(220, 235, 255, 0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #FAF8F0 0%, #F0EDE0 50%, #EDE8D8 100%);
+  background-size:
+    20px 20px,
+    20px 20px,
+    100px 100px,
+    100px 100px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+}
+
+/* Hide canvas — grid paper IS the background now */
+canvas { display: none; }
+
+/* ── Loading Screen ────────────────────────────────────────── */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: #F5F2EB;
+  background-image:
+    linear-gradient(rgba(60, 120, 210, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(60, 120, 210, 0.10) 1px, transparent 1px);
+  background-size: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  font-family: var(--hand);
+  font-size: 1.6rem;
+  color: var(--navy);
+  transition: opacity 0.7s ease;
+}
+#loading .loading-bar {
+  width: 220px;
+  height: 4px;
+  background: rgba(26,39,66,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+#loading .loading-bar-fill {
+  height: 100%;
+  background: var(--orange);
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+/* ── Content Overlay ───────────────────────────────────────── */
+#content-overlay {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  padding: 0 6%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+section {
+  width: 100%;
+  max-width: 1060px;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 0 60px;
+  position: relative;
+}
+
+/* ── Paper Base ────────────────────────────────────────────── */
+.paper {
+  background: var(--paper-ivory);
+  position: relative;
+  border-radius: 2px;
+  /* Subtle paper grain via noise pattern */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom right, var(--paper-ivory), var(--paper-cream));
+}
+
+/* ── Torn Paper Edge ───────────────────────────────────────── */
+.torn-top::before,
+.torn-bottom::after {
+  content: '';
+  position: absolute;
+  left: -2px; right: -2px;
+  height: 18px;
+  background: inherit;
+  clip-path: polygon(
+    0% 40%, 1.2% 0%, 2.4% 55%, 3.6% 10%, 4.8% 70%, 6% 20%,
+    7.2% 80%, 8.4% 30%, 9.6% 65%, 10.8% 5%,  12% 75%, 13.2% 25%,
+    14.4% 85%, 15.6% 15%, 16.8% 60%, 18% 0%,  19.2% 70%, 20.4% 30%,
+    21.6% 90%, 22.8% 10%, 24% 55%, 25.2% 20%, 26.4% 80%, 27.6% 35%,
+    28.8% 65%, 30% 5%,  31.2% 75%, 32.4% 40%, 33.6% 95%, 34.8% 15%,
+    36% 60%, 37.2% 25%, 38.4% 85%, 39.6% 0%,  40.8% 50%, 42% 20%,
+    43.2% 70%, 44.4% 30%, 45.6% 90%, 46.8% 10%, 48% 65%, 49.2% 5%,
+    50.4% 75%, 51.6% 35%, 52.8% 80%, 54% 15%, 55.2% 55%, 56.4% 25%,
+    57.6% 85%, 58.8% 0%,  60% 60%, 61.2% 20%, 62.4% 75%, 63.6% 40%,
+    64.8% 95%, 66% 10%, 67.2% 65%, 68.4% 30%, 69.6% 80%, 70.8% 5%,
+    72% 50%, 73.2% 25%, 74.4% 85%, 75.6% 15%, 76.8% 70%, 78% 35%,
+    79.2% 90%, 80.4% 0%, 81.6% 55%, 82.8% 20%, 84% 75%, 85.2% 40%,
+    86.4% 65%, 87.6% 10%, 88.8% 80%, 90% 30%, 91.2% 85%, 92.4% 5%,
+    93.6% 60%, 94.8% 25%, 96% 70%, 97.2% 15%, 98.4% 50%, 100% 40%,
+    100% 100%, 0% 100%
+  );
+  z-index: 1;
+}
+.torn-top::before  { top: -16px; }
+.torn-bottom::after { bottom: -16px; transform: scaleY(-1); }
+
+/* ── Notebook Paper Lines ──────────────────────────────────── */
+.notebook-paper {
+  background-color: var(--paper-white);
+  background-image:
+    linear-gradient(rgba(200, 220, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(230, 100, 80, 0.35) 1px, transparent 1px);
+  background-size: 100% 30px, 100% 100%;
+  background-position: 0 8px, 68px 0;
+  background-repeat: repeat, no-repeat;
+  border-left: 3px solid rgba(230, 100, 80, 0.25);
+  padding: 40px 44px 44px 84px;
+  line-height: 30px;
+}
+
+/* ── Grid Paper ────────────────────────────────────────────── */
+.grid-paper {
+  background-color: var(--paper-beige);
+  background-image:
+    linear-gradient(rgba(42, 96, 200, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 96, 200, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* ── Washi Tape ────────────────────────────────────────────── */
+.tape {
+  position: absolute;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hand);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0 18px;
+  z-index: 20;
+  pointer-events: none;
+  /* Serrated edges via repeating gradient */
+  --tc: rgba(232, 98, 26, 0.65);
+}
+.tape::before, .tape::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 8px;
+  background-size: 8px 8px;
+}
+.tape-orange {
+  background: rgba(232, 98, 26, 0.60);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.tape-blue {
+  background: rgba(40, 96, 200, 0.65);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.tape-cream {
+  background: rgba(253, 248, 237, 0.85);
+  color: var(--navy);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+/* ── Push Pin ──────────────────────────────────────────────── */
+.pin {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  z-index: 25;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+}
+
+/* ── Paper Clip ────────────────────────────────────────────── */
+.clip {
+  position: absolute;
+  width: 22px;
+  height: 50px;
+  z-index: 25;
+  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.20));
+}
+
+/* ── Sticky Note ───────────────────────────────────────────── */
+.sticky {
+  padding: 28px 26px 22px;
+  box-shadow: var(--shadow-md), inset 0 -1px 0 rgba(0,0,0,0.05);
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+}
+.sticky::before {
+  /* Fold corner effect */
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 0 20px 20px;
+  border-color: transparent transparent rgba(0,0,0,0.09) transparent;
+}
+.sticky:hover {
+  transform: translateY(-6px) rotate(0deg) !important;
+  box-shadow: var(--shadow-lg);
+  z-index: 30;
+}
+.sticky h3 {
+  font-family: var(--hand);
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px dashed rgba(0,0,0,0.15);
+}
+.sticky-y  { background: var(--sticky-yellow); }
+.sticky-p  { background: var(--sticky-pink); }
+.sticky-b  { background: var(--sticky-blue); }
+.sticky-g  { background: var(--sticky-green); }
+
+/* ── Skill Tags inside Stickies ───────────────────────────── */
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 3px;
+  font-family: var(--type);
+  font-size: 0.82rem;
+  color: var(--navy);
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(0,0,0,0.10);
+  margin: 4px 4px 0 0;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.06);
+}
+
+/* ── Polaroid Frame ────────────────────────────────────────── */
+.polaroid {
+  background: #FEFEFE;
+  padding: 12px 12px 44px;
+  box-shadow: var(--shadow-pol);
+  border: 1px solid rgba(0,0,0,0.05);
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.34,1.36,0.64,1), box-shadow 0.4s ease;
+}
+.polaroid:hover {
+  box-shadow: 8px 16px 40px rgba(0,0,0,0.22);
+  z-index: 30;
+}
+.polaroid img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.polaroid-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hand);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* ── Section Title ─────────────────────────────────────────── */
+.section-title {
+  font-family: var(--sketch);
+  font-size: 2.2rem;
+  color: var(--navy);
+  position: relative;
+  display: inline-block;
+  margin-bottom: 36px;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 65%;
+  height: 3px;
+  background: var(--orange);
+  border-radius: 2px;
+  transform: rotate(-0.8deg);
+}
+
+/* ── Hero Section ──────────────────────────────────────────── */
+.hero { margin-top: 8vh; }
+
+.hero-layout {
+  display: flex;
+  align-items: center;
+  gap: 55px;
+  flex-wrap: wrap;
+}
+
+/* Hero Profile Polaroid wrapper */
+.hero-photo-wrap {
+  flex-shrink: 0;
+  position: relative;
+}
+.hero-polaroid {
+  width: 240px;
+  transform: rotate(-3deg);
+}
+.hero-polaroid img {
+  width: 216px;
+  height: 216px;
+}
+.hero-polaroid:hover { transform: rotate(0deg) scale(1.04); }
+
+/* Tape over polaroid top */
+.hero-tape {
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 120px;
+  font-size: 0.85rem;
+}
+
+/* Circuit doodle near polaroid */
+.doodle {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+.doodle path, .doodle circle, .doodle line, .doodle rect, .doodle polyline {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+
+/* Hero text card */
+.hero-card {
+  flex: 1;
+  min-width: 300px;
+  padding: 44px 48px;
+  box-shadow: var(--shadow-lg);
+  transform: rotate(0.6deg);
+  position: relative;
+}
+.hero-card h1 {
+  font-family: var(--sketch);
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  color: var(--navy);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.hero-card h2 {
+  font-family: var(--type);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--orange);
+  font-weight: 400;
+  margin: 10px 0 20px;
+}
+.hero-card p {
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--charcoal);
+  max-width: 480px;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  font-family: var(--type);
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary {
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--blue);
+  border: 1.5px solid var(--navy);
+}
+.btn-primary:hover {
+  transform: translate(-2px,-2px);
+  box-shadow: 5px 5px 0 var(--blue);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--navy);
+  border: 1.5px solid var(--navy);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.12);
+}
+.btn-outline:hover {
+  background: var(--paper-beige);
+  transform: translate(-2px,-2px);
+  box-shadow: 5px 5px 0 rgba(0,0,0,0.14);
+}
+
+/* ── About Me Section ──────────────────────────────────────── */
+.about-card {
+  box-shadow: var(--shadow-lg);
+  transform: rotate(-0.5deg);
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.about-card:hover { transform: rotate(0deg); }
+.about-text {
+  font-family: var(--kalam);
+  font-size: 1.3rem;
+  line-height: 30px;
+  color: #333;
+  margin-top: 8px;
+}
+
+/* ── Education + Skills Grid ───────────────────────────────── */
+.edu-skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: start;
+}
+@media (max-width: 700px) { .edu-skills-grid { grid-template-columns: 1fr; } }
+
+.edu-card {
+  padding: 44px 40px;
+  box-shadow: var(--shadow-lg);
+  transform: rotate(-1.5deg);
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.edu-card:hover { transform: rotate(0deg); transition: 0.3s ease; }
+
+.edu-entry h3 {
+  font-family: var(--sketch);
+  font-size: 1.35rem;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.edu-entry h4 {
+  font-family: var(--type);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+.edu-entry .edu-meta {
+  font-family: var(--hand);
+  font-size: 1.1rem;
+  color: #555;
+}
+.edu-divider {
+  border: none;
+  border-top: 1px dashed rgba(0,0,0,0.15);
+  margin: 22px 0;
+}
+
+.skills-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── Experience Section ────────────────────────────────────── */
+.exp-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.exp-card {
+  padding: 38px 44px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.exp-card:nth-child(1) { transform: rotate(0.6deg); }
+.exp-card:nth-child(3) { transform: rotate(-0.5deg); }
+.exp-card:hover { transform: rotate(0deg) !important; box-shadow: var(--shadow-lg); z-index: 10; transition: 0.3s; }
+
+.exp-card h3 {
+  font-family: var(--sketch);
+  font-size: 1.5rem;
+  color: var(--navy);
+  margin-bottom: 5px;
+}
+.exp-card h4 {
+  font-family: var(--type);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+.exp-card p {
+  font-size: 0.97rem;
+  line-height: 1.72;
+  color: #444;
+}
+
+.timeline-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  position: relative;
+  z-index: 5;
+}
+
+/* ── Projects Grid ─────────────────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 36px;
+  margin-top: 16px;
+}
+
+.proj-card {
+  background: var(--paper-white);
+  padding: 18px 18px 22px;
+  box-shadow: var(--shadow-pol);
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.35s cubic-bezier(0.34,1.36,0.64,1), box-shadow 0.35s ease;
+}
+.proj-card:nth-child(1) { transform: rotate(-1.5deg); }
+.proj-card:nth-child(2) { transform: rotate(1.8deg); }
+.proj-card:nth-child(3) { transform: rotate(-1.0deg); }
+.proj-card:nth-child(4) { transform: rotate(0.8deg); }
+.proj-card:hover {
+  transform: rotate(0deg) translateY(-8px) !important;
+  box-shadow: 8px 18px 40px rgba(0,0,0,0.22);
+  z-index: 20;
+}
+
+.proj-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(0,0,0,0.08);
+  margin-bottom: 14px;
+}
+
+.proj-sticky-title {
+  display: inline-block;
+  padding: 5px 14px;
+  font-family: var(--hand);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--navy);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.07);
+  transform: rotate(-1deg);
+  margin-bottom: 12px;
+}
+
+.proj-card p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #4a4a48;
+  margin-bottom: 14px;
+}
+
+.tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.tech-chip {
+  font-family: var(--type);
+  font-size: 0.74rem;
+  padding: 3px 9px;
+  background: var(--paper-beige);
+  color: var(--navy);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.btn-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-family: var(--type);
+  font-size: 0.8rem;
+  color: var(--navy);
+  text-decoration: none;
+  border: 1.5px solid var(--navy);
+  background: transparent;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.12);
+  transition: all 0.2s ease;
+}
+.btn-github:hover {
+  background: var(--navy);
+  color: #fff;
+  transform: translate(-1px,-1px);
+  box-shadow: 3px 3px 0 var(--blue);
+}
+
+/* ── Certs & Journal ───────────────────────────────────────── */
+.cert-journal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 700px) { .cert-journal-grid { grid-template-columns: 1fr; } }
+
+/* Overlapping polaroid stack */
+.cert-stack {
+  position: relative;
+  height: 360px;
+}
+.cert-pol {
+  position: absolute;
+  width: 240px;
+  background: #FEFEFE;
+  padding: 10px 10px 36px;
+  box-shadow: var(--shadow-pol);
+  border: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.34,1.36,0.64,1), box-shadow 0.4s ease, z-index 0s;
+}
+.cert-pol:hover { box-shadow: 8px 16px 40px rgba(0,0,0,0.25); }
+
+.cert-pol-face {
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  text-align: center;
+  background: var(--paper-beige);
+  border: 1px solid rgba(0,0,0,0.06);
+  gap: 10px;
+}
+.cert-pol-face .cert-icon {
+  font-size: 2rem;
+}
+.cert-pol-face p {
+  font-family: var(--type);
+  font-size: 0.85rem;
+  color: var(--navy);
+  line-height: 1.4;
+}
+.cert-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hand);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* Individual cert positions */
+.cert-pol:nth-child(1) { left: 10px;  top: 25px;  transform: rotate(-8deg);  z-index: 3; }
+.cert-pol:nth-child(2) { left: 120px; top: 10px;  transform: rotate(4deg);   z-index: 2; }
+.cert-pol:nth-child(3) { left: 230px; top: 35px;  transform: rotate(-2deg);  z-index: 1; }
+.cert-pol:hover { z-index: 10 !important; }
+.cert-pol:nth-child(1):hover { transform: rotate(0deg) scale(1.05); }
+.cert-pol:nth-child(2):hover { transform: rotate(0deg) scale(1.05); }
+.cert-pol:nth-child(3):hover { transform: rotate(0deg) scale(1.05); }
+
+/* Journal card */
+.journal-card {
+  padding: 38px 40px;
+  box-shadow: var(--shadow-lg);
+  transform: rotate(-1deg);
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: transform 0.3s ease;
+}
+.journal-card:hover { transform: rotate(0deg); }
+.journal-title {
+  font-family: var(--sketch);
+  font-size: 1.5rem;
+  color: var(--navy);
+  margin-bottom: 18px;
+}
+.journal-paper-title {
+  font-family: var(--type);
+  font-size: 1.05rem;
+  color: var(--navy);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.journal-meta {
+  font-family: var(--hand);
+  font-size: 1.25rem;
+  color: var(--orange);
+}
+
+/* ── Contact Board ─────────────────────────────────────────── */
+.contact-board {
+  background: var(--paper-beige);
+  background-image:
+    linear-gradient(rgba(42,96,200,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42,96,200,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  padding: 56px 52px 50px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(0,0,0,0.06);
+  position: relative;
+  text-align: center;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 22px;
+  background: var(--paper-white);
+  border: 1px solid rgba(0,0,0,0.09);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--type);
+  font-size: 0.9rem;
+  color: var(--navy);
+  text-decoration: none;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+/* small push-pin on each chip */
+.contact-chip::before {
+  content: '📌';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+}
+.contact-chip:hover {
+  transform: translateY(-5px) rotate(-1deg);
+  box-shadow: 4px 8px 18px rgba(0,0,0,0.13);
+  border-color: var(--orange);
+}
+
+/* ── Scroll-Reveal Animations ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px) rotate(var(--reveal-rot, 0deg));
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.34,1.2,0.64,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0) rotate(var(--reveal-rot-final, 0deg));
+}
+
+/* Stagger delays */
+.reveal-d1 { transition-delay: 0.05s; }
+.reveal-d2 { transition-delay: 0.15s; }
+.reveal-d3 { transition-delay: 0.25s; }
+.reveal-d4 { transition-delay: 0.35s; }
+
+/* ── Floating animation for Hero Polaroid ──────────────────── */
+@keyframes float {
+  0%   { transform: rotate(-3deg) translateY(0px); }
+  50%  { transform: rotate(-2deg) translateY(-7px); }
+  100% { transform: rotate(-3deg) translateY(0px); }
+}
+.hero-polaroid { animation: float 5s ease-in-out infinite; }
+
+/* ── Floating stickies ─────────────────────────────────────── */
+@keyframes floatSticky1 {
+  0%,100% { transform: rotate(-1.5deg) translateY(0); }
+  50%      { transform: rotate(-0.5deg) translateY(-5px); }
+}
+@keyframes floatSticky2 {
+  0%,100% { transform: rotate(2deg) translateY(0); }
+  50%      { transform: rotate(1deg) translateY(-4px); }
+}
+@keyframes floatSticky3 {
+  0%,100% { transform: rotate(-2.5deg) translateY(0); }
+  50%      { transform: rotate(-1.5deg) translateY(-6px); }
+}
+@keyframes floatSticky4 {
+  0%,100% { transform: rotate(1.5deg) translateY(0); }
+  50%      { transform: rotate(0.5deg) translateY(-4px); }
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero-layout { flex-direction: column; align-items: center; text-align: center; }
+  .hero-card { transform: none; }
+  .hero-photo-wrap { margin-bottom: 20px; }
+  .btn-row { justify-content: center; }
+  .cert-stack { height: auto; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+  .cert-pol { position: static !important; transform: none !important; width: 90%; max-width: 280px; }
+  .cert-pol:hover { transform: scale(1.03) !important; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RANSOM NOTE / CUT-OUT LETTER EFFECT
+   Applied to .ransom-word elements via JS letter splitting
+════════════════════════════════════════════════════════════ */
+
+/* Base letter span */
+.rl {
+  display: inline-block;
+  line-height: 1;
+  position: relative;
+  /* Small paper-cutout shadow under each letter */
+  filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.18));
+  transition: transform 0.2s ease;
+}
+.rl:hover {
+  transform: scale(1.15) rotate(0deg) !important;
+  z-index: 5;
+}
+
+/* Space character */
+.rl-space {
+  display: inline-block;
+  width: 0.35em;
+}
+
+/* ── 10 font variation classes (cycling 0–9) ─── */
+.rl-0 {
+  font-family: 'Abril Fatface', serif;
+  font-size: 1.05em;
+  color: #1A2742;
+  transform: rotate(-3deg);
+  background: #fff;
+  padding: 2px 4px 0;
+  border: 1.5px solid rgba(0,0,0,0.12);
+}
+.rl-1 {
+  font-family: 'Boogaloo', cursive;
+  font-size: 1.12em;
+  color: #E8621A;
+  transform: rotate(2deg);
+  background: #FFF5A0;
+  padding: 2px 3px 0;
+  border: 1.5px solid rgba(0,0,0,0.08);
+}
+.rl-2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92em;
+  font-weight: 700;
+  color: #fff;
+  background: #1A2742;
+  transform: rotate(-1deg);
+  padding: 3px 4px 1px;
+}
+.rl-3 {
+  font-family: 'Lilita One', cursive;
+  font-size: 1.08em;
+  color: #2860C8;
+  transform: rotate(3deg);
+  background: #D0E8FF;
+  padding: 2px 4px 0;
+  border: 1.5px solid rgba(40,96,200,0.2);
+}
+.rl-4 {
+  font-family: 'Righteous', cursive;
+  font-size: 0.95em;
+  color: #1A2742;
+  transform: rotate(-2deg);
+  background: #F0EAD6;
+  padding: 2px 4px 0;
+  border: 1.5px solid rgba(0,0,0,0.10);
+}
+.rl-5 {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.0em;
+  color: #111;
+  transform: rotate(1.5deg);
+  background: #FFD6E8;
+  padding: 2px 3px 0;
+  border: 1.5px solid rgba(0,0,0,0.08);
+}
+.rl-6 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.10em;
+  color: #E8621A;
+  transform: rotate(-4deg);
+  background: #fff;
+  padding: 2px 4px 0;
+  border: 1.5px solid rgba(232,98,26,0.2);
+}
+.rl-7 {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 0.88em;
+  color: #fff;
+  background: #2860C8;
+  transform: rotate(2.5deg);
+  padding: 3px 5px 1px;
+}
+.rl-8 {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.98em;
+  color: #333;
+  transform: rotate(-1.5deg);
+  background: #D6F5D6;
+  padding: 2px 4px 0;
+  border: 1.5px solid rgba(0,0,0,0.08);
+}
+.rl-9 {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.18em;
+  color: #1A2742;
+  transform: rotate(3.5deg);
+  background: #FAF7F0;
+  padding: 2px 3px 0;
+  border: 1.5px solid rgba(0,0,0,0.10);
+}
+
+/* Hero h1 ransom letters — larger scale */
+.hero-card h1 .rl {
+  margin: 0 1px;
+  vertical-align: middle;
+}
+
+/* Section title ransom letters — medium scale */
+.section-title .rl {
+  margin: 0 1px;
+  vertical-align: middle;
+  font-size: 0.88em;
+}
+

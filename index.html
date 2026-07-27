@@ -1,187 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smooth Scroll Animation</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
-            /* Extra height to allow scrolling, controls the speed of scroll animation */
-            height: 600vh;
-        }
-
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: block;
-            z-index: 1;
-        }
-
-        /* Hide scrollbars for a cleaner, full-screen end-to-end look */
-        ::-webkit-scrollbar {
-            display: none;
-        }
-        html {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* IE and Edge */
-        }
-
-        #loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            font-size: 24px;
-            font-weight: 300;
-            transition: opacity 0.5s ease;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Thikash J — AI & Machine Learning Engineer. Premium portfolio showcasing projects, experience, and publications.">
+  <title>Thikash J — AI & ML Engineer</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scrollbar-width:none;-ms-overflow-style:none}
+    ::-webkit-scrollbar{display:none}
+  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loading">Loading Animation... 0%</div>
-    <canvas id="scroll-canvas"></canvas>
 
-    <script>
-        const canvas = document.getElementById("scroll-canvas");
-        const context = canvas.getContext("2d");
-        const loadingEl = document.getElementById("loading");
+<!-- ── Loading Overlay ── -->
+<div id="loading">
+  <span id="loading-text" style="font-family:'Caveat',cursive;font-size:1.6rem;color:#1A2742">Crafting your scrapbook… ✨</span>
+  <div class="loading-bar"><div class="loading-bar-fill" id="bar-fill"></div></div>
+</div>
 
-        const frameCount = 300;
-        const currentFrame = index => (
-            `./ezgif-732f62894c500211-jpg/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`
-        );
+<!-- Canvas hidden — grid paper background is pure CSS -->
+<canvas id="scroll-canvas" style="display:none"></canvas>
 
-        const images = [];
-        let imagesLoaded = 0;
+<!-- ── SCATTERED BACKGROUND DECORATIONS ── -->
+<!-- These are fixed, pointer-events:none SVG doodles layered behind the content -->
+<div id="bg-decor" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden">
+  <!-- Top-left: scattered stars -->
+  <svg style="position:absolute;top:3%;left:2%;opacity:.55" width="120" height="120" viewBox="0 0 120 120">
+    <!-- 6-point star -->
+    <path d="M30,5 L33,22 L50,22 L36,33 L41,50 L30,39 L19,50 L24,33 L10,22 L27,22 Z" fill="#2860C8" opacity=".7"/>
+    <!-- small 4-point star -->
+    <path d="M90,15 L93,25 L103,25 L95,31 L98,41 L90,35 L82,41 L85,31 L77,25 L87,25 Z" fill="#2860C8" opacity=".5" transform="scale(0.6) translate(60,10)"/>
+    <!-- outline star -->
+    <path d="M70,60 L72,70 L82,70 L74,76 L77,86 L70,80 L63,86 L66,76 L58,70 L68,70 Z" fill="none" stroke="#2860C8" stroke-width="1.5" opacity=".6"/>
+    <!-- tiny dot stars -->
+    <circle cx="10" cy="80" r="3" fill="#2860C8" opacity=".5"/>
+    <circle cx="100" cy="90" r="2" fill="#E8621A" opacity=".6"/>
+    <circle cx="50" cy="100" r="2.5" fill="#2860C8" opacity=".4"/>
+  </svg>
 
-        // Preload images
-        function preloadImages() {
-            for (let i = 1; i <= frameCount; i++) {
-                const img = new Image();
-                img.onload = () => {
-                    imagesLoaded++;
-                    loadingEl.textContent = `Loading Animation... ${Math.round((imagesLoaded / frameCount) * 100)}%`;
-                    if (imagesLoaded === frameCount) {
-                        setTimeout(() => {
-                            loadingEl.style.opacity = 0;
-                            setTimeout(() => {
-                                loadingEl.style.display = 'none';
-                            }, 500);
-                        }, 200);
-                        initAnimation();
-                    }
-                };
-                img.onerror = () => {
-                    // Try fallback if there is any issue loading
-                    imagesLoaded++;
-                    if (imagesLoaded === frameCount) {
-                        initAnimation();
-                    }
-                };
-                img.src = currentFrame(i);
-                images.push(img);
-            }
-        }
+  <!-- Top-right: outline stars + dots -->
+  <svg style="position:absolute;top:2%;right:2%;opacity:.5" width="150" height="130" viewBox="0 0 150 130">
+    <path d="M120,10 L123,22 L135,22 L126,30 L129,42 L120,34 L111,42 L114,30 L105,22 L117,22 Z" fill="none" stroke="#2860C8" stroke-width="2"/>
+    <path d="M30,20 L32,28 L40,28 L34,33 L36,41 L30,36 L24,41 L26,33 L20,28 L28,28 Z" fill="#2860C8" opacity=".6"/>
+    <circle cx="80" cy="15" r="4" fill="#2860C8" opacity=".4"/>
+    <circle cx="60" cy="50" r="2.5" fill="#E8621A" opacity=".55"/>
+    <circle cx="140" cy="60" r="3" fill="#2860C8" opacity=".35"/>
+    <!-- wavy doodle line -->
+    <path d="M10,80 C30,70 50,90 70,80 C90,70 110,90 140,80" fill="none" stroke="#2860C8" stroke-width="1.5" opacity=".3" stroke-dasharray="4,3"/>
+  </svg>
 
-        // Animation State
-        const state = {
-            frameIndex: 0,
-            scrollProgress: 0,
-            smoothedProgress: 0
-        };
+  <!-- Bottom-left: geometric shapes -->
+  <svg style="position:absolute;bottom:5%;left:1%;opacity:.4" width="140" height="160" viewBox="0 0 140 160">
+    <!-- triangle -->
+    <polygon points="40,20 70,70 10,70" fill="none" stroke="#2860C8" stroke-width="1.8"/>
+    <!-- circle -->
+    <circle cx="110" cy="50" r="22" fill="none" stroke="#2860C8" stroke-width="1.5"/>
+    <!-- small filled star -->
+    <path d="M25,100 L27,108 L35,108 L29,113 L31,121 L25,116 L19,121 L21,113 L15,108 L23,108 Z" fill="#2860C8" opacity=".7"/>
+    <!-- dots -->
+    <circle cx="80" cy="130" r="3" fill="#E8621A" opacity=".6"/>
+    <circle cx="110" cy="140" r="2" fill="#2860C8" opacity=".5"/>
+    <circle cx="50" cy="150" r="2.5" fill="#2860C8" opacity=".4"/>
+  </svg>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            renderFrame();
-        }
+  <!-- Bottom-right: scattered mix -->
+  <svg style="position:absolute;bottom:3%;right:1%;opacity:.45" width="150" height="150" viewBox="0 0 150 150">
+    <path d="M110,10 L113,22 L125,22 L116,30 L119,42 L110,34 L101,42 L104,30 L95,22 L107,22 Z" fill="#2860C8" opacity=".65"/>
+    <path d="M30,60 L32,68 L40,68 L34,73 L36,81 L30,76 L24,81 L26,73 L20,68 L28,68 Z" fill="none" stroke="#2860C8" stroke-width="1.5"/>
+    <circle cx="80" cy="120" r="20" fill="none" stroke="#2860C8" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <circle cx="130" cy="90" r="4" fill="#E8621A" opacity=".6"/>
+    <circle cx="20" cy="130" r="3" fill="#2860C8" opacity=".5"/>
+  </svg>
 
-        function renderFrame() {
-            const imgIndex = Math.min(
-                frameCount - 1,
-                Math.max(0, Math.floor(state.smoothedProgress * frameCount))
-            );
-            const img = images[imgIndex];
-            if (!img || !img.complete || img.naturalWidth === 0) return;
+  <!-- Mid-left accent: dashed bracket/line doodle -->
+  <svg style="position:absolute;top:40%;left:0%;opacity:.3" width="60" height="200" viewBox="0 0 60 200">
+    <path d="M50,10 C20,10 10,30 10,50 L10,150 C10,170 20,190 50,190" fill="none" stroke="#2860C8" stroke-width="2" stroke-dasharray="5,4"/>
+  </svg>
 
-            // Clear canvas
-            context.clearRect(0, 0, canvas.width, canvas.height);
+  <!-- Mid-right accent -->
+  <svg style="position:absolute;top:45%;right:0%;opacity:.3" width="60" height="180" viewBox="0 0 60 180">
+    <path d="M10,10 C40,10 50,30 50,50 L50,130 C50,150 40,170 10,170" fill="none" stroke="#2860C8" stroke-width="2" stroke-dasharray="5,4"/>
+  </svg>
+</div>
 
-            // Keep end-to-end visual (similar to object-fit: cover) without zooming
-            const canvasRatio = canvas.width / canvas.height;
-            const imgRatio = img.naturalWidth / img.naturalHeight;
+<!-- ═══════════════════════════════════════════════════════════
+     SVG SYMBOL DEFINITIONS  (pins, clips, arrows, doodles)
+═══════════════════════════════════════════════════════════ -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <!-- Push Pin (orange) -->
+    <symbol id="pin-orange" viewBox="0 0 24 28">
+      <ellipse cx="12" cy="6" rx="6" ry="6" fill="#E8621A"/>
+      <ellipse cx="12" cy="6" rx="3.5" ry="3.5" fill="#C94A08"/>
+      <rect x="11" y="12" width="2" height="12" rx="1" fill="#9e9e9e"/>
+    </symbol>
+    <!-- Push Pin (blue) -->
+    <symbol id="pin-blue" viewBox="0 0 24 28">
+      <ellipse cx="12" cy="6" rx="6" ry="6" fill="#2860C8"/>
+      <ellipse cx="12" cy="6" rx="3.5" ry="3.5" fill="#1A44A0"/>
+      <rect x="11" y="12" width="2" height="12" rx="1" fill="#9e9e9e"/>
+    </symbol>
+    <!-- Paper Clip (grey) -->
+    <symbol id="clip" viewBox="0 0 20 50">
+      <path d="M10 2 C5 2 2 6 2 10 L2 36 C2 43 6 48 10 48 C14 48 18 43 18 36 L18 12 C18 7 15 4 11 4 C7 4 5 7 5 12 L5 34 C5 38 7 40 10 40 C13 40 15 38 15 34 L15 12"
+            fill="none" stroke="#7F8C8D" stroke-width="2.2" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
 
-            let drawWidth, drawHeight, drawX, drawY;
+<!-- ═══════════════════════════════════════════════════════════
+     CONTENT OVERLAY
+═══════════════════════════════════════════════════════════ -->
+<div id="content-overlay">
 
-            if (canvasRatio > imgRatio) {
-                // Canvas is wider than image
-                drawWidth = canvas.width;
-                drawHeight = canvas.width / imgRatio;
-                drawX = 0;
-                drawY = (canvas.height - drawHeight) / 2;
-            } else {
-                // Canvas is taller than image
-                drawWidth = canvas.height * imgRatio;
-                drawHeight = canvas.height;
-                drawX = (canvas.width - drawWidth) / 2;
-                drawY = 0;
-            }
+  <!-- ════════════════════════════════════════
+       HERO SECTION
+  ════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-layout">
 
-            context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-        }
+      <!-- Profile Polaroid -->
+      <div class="hero-photo-wrap">
+        <!-- Washi tape across top of polaroid -->
+        <div class="tape tape-orange hero-tape">📌 Thikash J</div>
 
-        function updateProgress() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            state.scrollProgress = maxScroll <= 0 ? 0 : scrollTop / maxScroll;
-        }
+        <div class="polaroid hero-polaroid">
+          <img src="Screenshot 2026-07-27 193826.png"
+               alt="Thikash J — AI & ML Engineer"
+               style="width:216px;height:216px;">
+          <div class="polaroid-caption">AI/ML Engineer</div>
+        </div>
 
-        function tick() {
-            // Lerp scroll position for ultra smooth transition
-            // Increase 0.08 to make it faster, decrease to make it smoother and slower
-            const lerpFactor = 0.08; 
-            state.smoothedProgress += (state.scrollProgress - state.smoothedProgress) * lerpFactor;
+        <!-- AI circuit doodle — bottom-left of polaroid -->
+        <svg class="doodle" style="width:80px;height:80px;bottom:-50px;left:-35px;position:absolute" viewBox="0 0 80 80">
+          <rect x="28" y="28" width="24" height="24" rx="3"/>
+          <line x1="28" y1="36" x2="10" y2="36"/>  <circle cx="7"  cy="36" r="3"/>
+          <line x1="28" y1="44" x2="10" y2="44"/>  <circle cx="7"  cy="44" r="3"/>
+          <line x1="52" y1="36" x2="70" y2="36"/>  <circle cx="73" cy="36" r="3"/>
+          <line x1="52" y1="44" x2="70" y2="44"/>  <circle cx="73" cy="44" r="3"/>
+          <line x1="36" y1="28" x2="36" y2="10"/>  <circle cx="36" cy="7"  r="3"/>
+          <line x1="44" y1="28" x2="44" y2="10"/>  <circle cx="44" cy="7"  r="3"/>
+          <line x1="36" y1="52" x2="36" y2="70"/>  <circle cx="36" cy="73" r="3"/>
+          <line x1="44" y1="52" x2="44" y2="70"/>  <circle cx="44" cy="73" r="3"/>
+        </svg>
 
-            // Render current frame
-            renderFrame();
+        <!-- Laptop sketch doodle — bottom-right -->
+        <svg class="doodle" style="width:65px;height:55px;bottom:-48px;right:-30px;position:absolute" viewBox="0 0 65 55">
+          <rect x="8" y="5" width="49" height="32" rx="3"/>
+          <polyline points="3,37 62,37 62,43 3,43"/>
+          <line x1="24" y1="43" x2="41" y2="43" stroke-width="3"/>
+          <rect x="17" y="12" width="31" height="18" rx="1" stroke-dasharray="3,2"/>
+        </svg>
+      </div>
 
-            requestAnimationFrame(tick);
-        }
+      <!-- Hero Info Card -->
+      <div class="hero-card paper torn-top torn-bottom reveal reveal-d1">
+        <!-- small blue tape top-right corner -->
+        <div class="tape tape-blue" style="top:-14px;right:30px;width:110px;transform:rotate(2deg);font-size:.8rem">
+          ✏️ About Me
+        </div>
 
-        function initAnimation() {
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-            window.addEventListener('scroll', updateProgress);
-            
-            // Set initial state
-            updateProgress();
-            state.smoothedProgress = state.scrollProgress;
-            
-            // Start rendering loop
-            requestAnimationFrame(tick);
-        }
+        <!-- AI robot doodle top-right -->
+        <svg class="doodle" style="width:70px;height:70px;top:10px;right:10px;position:absolute;opacity:.35" viewBox="0 0 70 70">
+          <rect x="20" y="22" width="30" height="28" rx="4"/>
+          <rect x="28" y="14" width="14" height="10" rx="3"/>
+          <line x1="35" y1="14" x2="35" y2="12"/>
+          <circle cx="35" cy="10" r="2"/>
+          <rect x="26" y="31" width="7" height="7" rx="1"/>
+          <rect x="37" y="31" width="7" height="7" rx="1"/>
+          <line x1="10" y1="32" x2="20" y2="32"/>
+          <line x1="50" y1="32" x2="60" y2="32"/>
+          <line x1="25" y1="50" x2="22" y2="62"/>
+          <line x1="45" y1="50" x2="48" y2="62"/>
+        </svg>
 
-        // Start preloading
-        preloadImages();
-    </script>
+        <h1>THIKASH J</h1>
+        <h2>AI &amp; Machine Learning Engineer</h2>
+        <p>Aspiring Computer Science and Engineering student specializing in Artificial Intelligence and Machine Learning, with a strong foundation in programming, data structures, and modern AI technologies. Passionate about building real-world solutions through innovative projects and continuous learning.</p>
+
+        <div class="btn-row">
+          <a href="resume.txt" download class="btn btn-primary" target="_blank">📄 Download Resume</a>
+          <a href="mailto:thikashjayaprakash@gmail.com" class="btn btn-outline">✉️ Contact Me</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       ABOUT ME — TORN NOTEBOOK PAPER
+  ════════════════════════════════════════ -->
+  <section id="about">
+    <!-- Pin holding the card -->
+    <svg class="pin" style="top:60px;left:50%;transform:translateX(-50%)">
+      <use href="#pin-orange"/>
+    </svg>
+    <div class="about-card notebook-paper paper torn-top torn-bottom reveal">
+      <!-- tape corner decoration -->
+      <div class="tape tape-cream" style="top:-12px;left:30px;width:130px;transform:rotate(-2.5deg);font-size:.85rem">
+        📝 Professional Summary
+      </div>
+
+      <h2 class="section-title" style="margin-top:6px">About Me</h2>
+      <p class="about-text">
+        Aspiring Computer Science and Engineering student specializing in Artificial Intelligence and Machine Learning, with a strong foundation in programming, data structures, and modern AI technologies. Passionate about building real-world solutions through innovative projects and continuous learning. Seeking opportunities to apply technical skills, contribute to impactful developments, and grow within the evolving technology industry.
+      </p>
+
+      <!-- wavy underline doodle -->
+      <svg style="width:100%;height:16px;margin-top:10px;display:block" viewBox="0 0 600 16" preserveAspectRatio="none">
+        <path d="M0,8 C60,2 120,14 180,8 C240,2 300,14 360,8 C420,2 480,14 540,8 C570,2 585,14 600,8"
+              fill="none" stroke="#E8621A" stroke-width="1.6" stroke-linecap="round" opacity=".4"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       EDUCATION & SKILLS
+  ════════════════════════════════════════ -->
+  <section>
+    <div class="edu-skills-grid">
+
+      <!-- Education — grid paper card -->
+      <div class="edu-card grid-paper paper reveal reveal-d1">
+        <!-- clip at top -->
+        <svg class="clip" style="top:-22px;right:35px">
+          <use href="#clip"/>
+        </svg>
+        <div class="tape tape-blue" style="top:-14px;left:22px;width:130px;transform:rotate(-1.5deg);font-size:.82rem">
+          📂 Education
+        </div>
+
+        <h2 class="section-title" style="margin-top:10px">Education</h2>
+
+        <div class="edu-entry reveal reveal-d2">
+          <h3>B.E CSE (AI &amp; ML)</h3>
+          <h4>VSB Engineering College, Karur</h4>
+          <span class="edu-meta">2023 – Present &nbsp;·&nbsp; CGPA: 7.6</span>
+        </div>
+
+        <hr class="edu-divider">
+
+        <div class="edu-entry reveal reveal-d3">
+          <h3>HSC &amp; SSLC</h3>
+          <h4>Mount Giris Matric Hr.Sec. School</h4>
+          <span class="edu-meta">2008 – 2023</span>
+        </div>
+
+        <!-- pencil doodle bottom-right -->
+        <svg class="doodle" style="width:55px;height:55px;bottom:12px;right:12px;position:absolute;opacity:.3" viewBox="0 0 55 55">
+          <rect x="22" y="4" width="11" height="38" rx="2" transform="rotate(10,27.5,23)"/>
+          <polygon points="22,42 33,42 27.5,52" transform="rotate(10,27.5,47)"/>
+          <line x1="22" y1="38" x2="33" y2="40" transform="rotate(10,27.5,39)"/>
+        </svg>
+      </div>
+
+      <!-- Skills — coloured sticky notes -->
+      <div class="skills-col">
+
+        <!-- Programming Languages -->
+        <div class="sticky sticky-y reveal reveal-d1" style="transform:rotate(-1.5deg);--reveal-rot-final:-1.5deg;animation:floatSticky1 5s ease-in-out infinite;">
+          <svg class="clip" style="top:-18px;left:14px;height:42px;width:18px">
+            <use href="#clip"/>
+          </svg>
+          <h3>💻 Programming</h3>
+          <div>
+            <span class="skill-pill">Java</span>
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">C</span>
+          </div>
+        </div>
+
+        <!-- Frameworks -->
+        <div class="sticky sticky-p reveal reveal-d2" style="transform:rotate(2deg);--reveal-rot-final:2deg;animation:floatSticky2 5.5s ease-in-out infinite;">
+          <svg class="pin" style="top:-14px;right:20px">
+            <use href="#pin-blue"/>
+          </svg>
+          <h3>🌐 Frameworks</h3>
+          <div>
+            <span class="skill-pill">React.js</span>
+            <span class="skill-pill">Node.js</span>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="sticky sticky-b reveal reveal-d3" style="transform:rotate(-2deg);--reveal-rot-final:-2deg;animation:floatSticky3 4.8s ease-in-out infinite;">
+          <svg class="pin" style="top:-14px;left:24px">
+            <use href="#pin-orange"/>
+          </svg>
+          <h3>🛠️ Tools</h3>
+          <div>
+            <span class="skill-pill">Git</span>
+            <span class="skill-pill">Google AI Studio</span>
+            <span class="skill-pill">VS Code</span>
+            <span class="skill-pill">Google Colab</span>
+          </div>
+        </div>
+
+        <!-- Soft Skills -->
+        <div class="sticky sticky-g reveal reveal-d4" style="transform:rotate(1.5deg);--reveal-rot-final:1.5deg;animation:floatSticky4 5.2s ease-in-out infinite;">
+          <svg class="clip" style="top:-18px;right:18px;height:42px;width:18px">
+            <use href="#clip"/>
+          </svg>
+          <h3>🤝 Soft Skills</h3>
+          <div>
+            <span class="skill-pill">Teamwork</span>
+            <span class="skill-pill">Problem Solving</span>
+            <span class="skill-pill">Communication</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       EXPERIENCE — TIMELINE CARDS
+  ════════════════════════════════════════ -->
+  <section>
+    <!-- washi tape label for section -->
+    <div class="tape tape-orange" style="position:relative;display:inline-block;width:200px;transform:rotate(-1.5deg);margin-bottom:20px;font-size:.95rem">
+      💼 Experience Timeline
+    </div>
+    <h2 class="section-title">Experience</h2>
+
+    <div class="exp-timeline" style="margin-top:30px">
+
+      <!-- Card 1 -->
+      <div class="exp-card paper torn-bottom reveal reveal-d1">
+        <svg class="clip" style="top:-20px;right:40px;height:42px;width:18px">
+          <use href="#clip"/>
+        </svg>
+        <!-- Date tape -->
+        <div class="tape tape-cream" style="top:-12px;left:24px;width:170px;transform:rotate(-1deg);font-size:.8rem">
+          Feb 2026 – Apr 2026
+        </div>
+
+        <h3>Infosys Springboard Internship 6.0</h3>
+        <h4>Full Stack Java Developer Intern</h4>
+        <p>Completed a full-stack development internship focused on Java, Spring Boot, and MySQL application development. Strengthened expertise in secure web application development, database design, and role-based authentication through project implementation.</p>
+
+        <!-- small Java doodle -->
+        <svg class="doodle" style="width:45px;height:45px;bottom:12px;right:14px;position:absolute;opacity:.35" viewBox="0 0 45 45">
+          <path d="M18,8 C14,16 12,22 20,26 C14,28 12,34 20,38"/>
+          <path d="M26,38 C30,36 34,32 26,28"/>
+          <line x1="12" y1="32" x2="34" y2="32"/>
+        </svg>
+      </div>
+
+      <!-- Arrow connector -->
+      <div class="timeline-arrow">
+        <svg width="60" height="56" viewBox="0 0 60 56">
+          <path d="M30,2 C22,18 38,30 30,52"
+                fill="none" stroke="#1A2742" stroke-width="2" stroke-linecap="round"
+                stroke-dasharray="5,4" opacity=".55"/>
+          <polyline points="22,44 30,54 38,44"
+                    fill="none" stroke="#1A2742" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" opacity=".55"/>
+        </svg>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="exp-card paper torn-top reveal reveal-d2">
+        <svg class="pin" style="top:-14px;left:50%;transform:translateX(-50%)">
+          <use href="#pin-orange"/>
+        </svg>
+        <div class="tape tape-cream" style="top:-12px;right:24px;width:170px;transform:rotate(1deg);font-size:.8rem">
+          Dec 2025 – Jan 2026
+        </div>
+
+        <h3>Durga Tech Research &amp; Development</h3>
+        <h4>Java Intern</h4>
+        <p>Completed internship training focused on Core Java programming and application development. Strengthened understanding of object-oriented programming concepts and coding practices.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       PROJECTS — PINNED MEMORIES
+  ════════════════════════════════════════ -->
+  <section>
+    <div class="tape tape-blue" style="position:relative;display:inline-block;width:190px;transform:rotate(1deg);margin-bottom:20px;font-size:.95rem">
+      📸 Project Memories
+    </div>
+    <h2 class="section-title">Projects</h2>
+
+    <div class="projects-grid">
+
+      <!-- ResolveIT -->
+      <div class="proj-card reveal reveal-d1">
+        <svg class="pin" style="top:-14px;left:50%;transform:translateX(-50%)">
+          <use href="#pin-orange"/>
+        </svg>
+        <div class="tape tape-orange" style="top:-12px;left:12px;width:90px;font-size:.78rem;transform:rotate(-1deg)">
+          Java &amp; SQL
+        </div>
+        <img src="Screenshot 2026-07-27 193826.png" alt="ResolveIT project screenshot">
+        <div class="proj-sticky-title" style="background:#FFF5A0">ResolveIT</div>
+        <p>Developed a full-stack grievance and feedback management system using Java, Spring Boot, and MySQL. Built secure role-based dashboards with complaint tracking, status management, and feedback features for streamlined issue resolution.</p>
+        <div class="tech-row">
+          <span class="tech-chip">Java</span>
+          <span class="tech-chip">Spring Boot</span>
+          <span class="tech-chip">MySQL</span>
+          <span class="tech-chip">REST API</span>
+        </div>
+        <a href="https://github.com/TjWhiteboy" target="_blank" class="btn-github">
+          🐙 GitHub
+        </a>
+      </div>
+
+      <!-- AgriSense -->
+      <div class="proj-card reveal reveal-d2">
+        <svg class="pin" style="top:-14px;left:50%;transform:translateX(-50%)">
+          <use href="#pin-blue"/>
+        </svg>
+        <div class="tape tape-blue" style="top:-12px;right:12px;width:100px;font-size:.78rem;transform:rotate(1.5deg)">
+          AI Platform
+        </div>
+        <img src="Screenshot 2026-07-27 193826.png" alt="AgriSense project screenshot">
+        <div class="proj-sticky-title" style="background:#FFD6E8">AgriSense</div>
+        <p>Built an AI-powered web application providing smart farming insights using modern web technologies and AI APIs. Developed interactive frontend features and integrated AI-based recommendations for agriculture support.</p>
+        <div class="tech-row">
+          <span class="tech-chip">React</span>
+          <span class="tech-chip">AI APIs</span>
+          <span class="tech-chip">Node.js</span>
+          <span class="tech-chip">Google AI Studio</span>
+        </div>
+        <a href="https://github.com/TjWhiteboy" target="_blank" class="btn-github">
+          🐙 GitHub
+        </a>
+      </div>
+
+      <!-- Health Hive -->
+      <div class="proj-card reveal reveal-d3">
+        <svg class="pin" style="top:-14px;left:50%;transform:translateX(-50%)">
+          <use href="#pin-orange"/>
+        </svg>
+        <div class="tape tape-cream" style="top:-12px;left:12px;width:100px;font-size:.78rem;transform:rotate(-1.5deg)">
+          Python / AI
+        </div>
+        <img src="Screenshot 2026-07-27 193826.png" alt="Health Hive project screenshot">
+        <div class="proj-sticky-title" style="background:#D0E8FF">Health Hive</div>
+        <p>Developed a Python-based AI chatbot for healthcare assistance and automated responses. Designed conversational logic to simulate an AI health assistant and improve user interaction.</p>
+        <div class="tech-row">
+          <span class="tech-chip">Python</span>
+          <span class="tech-chip">NLP</span>
+          <span class="tech-chip">Chatbot</span>
+          <span class="tech-chip">AI Healthcare</span>
+        </div>
+        <a href="https://github.com/TjWhiteboy" target="_blank" class="btn-github">
+          🐙 GitHub
+        </a>
+      </div>
+
+      <!-- AI News Brain -->
+      <div class="proj-card reveal reveal-d4">
+        <svg class="pin" style="top:-14px;left:50%;transform:translateX(-50%)">
+          <use href="#pin-blue"/>
+        </svg>
+        <div class="tape tape-blue" style="top:-12px;right:12px;width:110px;font-size:.78rem;transform:rotate(1deg)">
+          Aggregator
+        </div>
+        <img src="Screenshot 2026-07-27 193826.png" alt="AI News Brain project screenshot">
+        <div class="proj-sticky-title" style="background:#D6F5D6">AI News Brain</div>
+        <p>Developed an AI-driven platform for collecting and summarizing news from various sources using intelligent aggregation and NLP summarization pipelines.</p>
+        <div class="tech-row">
+          <span class="tech-chip">Python</span>
+          <span class="tech-chip">AI Studio</span>
+          <span class="tech-chip">Web Scraping</span>
+          <span class="tech-chip">NLP</span>
+        </div>
+        <a href="https://github.com/TjWhiteboy" target="_blank" class="btn-github">
+          🐙 GitHub
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       CERTIFICATIONS & JOURNAL
+  ════════════════════════════════════════ -->
+  <section>
+    <div class="cert-journal-grid">
+
+      <!-- Certifications — overlapping polaroids -->
+      <div class="reveal">
+        <h2 class="section-title">Certifications</h2>
+
+        <div class="cert-stack" style="margin-top:30px">
+          <!-- clip binding all 3 -->
+          <svg class="clip" style="position:absolute;top:-18px;left:150px;z-index:20;height:46px;width:20px">
+            <use href="#clip"/>
+          </svg>
+
+          <!-- Cert 1 -->
+          <div class="cert-pol">
+            <div class="cert-pol-face">
+              <span class="cert-icon">☕</span>
+              <p>Java Foundation Certification</p>
+            </div>
+            <div class="cert-label">Infosys Springboard</div>
+          </div>
+
+          <!-- Cert 2 -->
+          <div class="cert-pol">
+            <div class="cert-pol-face">
+              <span class="cert-icon">🤖</span>
+              <p>Prompt Engineering</p>
+            </div>
+            <div class="cert-label">skillup</div>
+          </div>
+
+          <!-- Cert 3 -->
+          <div class="cert-pol">
+            <div class="cert-pol-face">
+              <span class="cert-icon">✨</span>
+              <p>GenerativeAI Fluency</p>
+            </div>
+            <div class="cert-label">Nasscom</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Published Journal — feature card -->
+      <div class="reveal reveal-d2">
+        <h2 class="section-title">Publications</h2>
+
+        <div class="journal-card grid-paper paper" style="margin-top:30px">
+          <!-- Paper clip top-left -->
+          <svg class="clip" style="top:-20px;left:22px;height:46px;width:20px">
+            <use href="#clip"/>
+          </svg>
+          <!-- Tape label top-right -->
+          <div class="tape tape-orange" style="top:-12px;right:20px;width:88px;font-size:.8rem;transform:rotate(1.5deg)">
+            📋 Journal
+          </div>
+
+          <p class="journal-title">Published Journal</p>
+
+          <!-- dashed horizontal rules mimicking paper lines -->
+          <svg style="width:100%;height:10px;margin-bottom:14px;display:block" viewBox="0 0 400 10" preserveAspectRatio="none">
+            <line x1="0" y1="5" x2="400" y2="5" stroke="rgba(42,96,200,.15)" stroke-width="1" stroke-dasharray="6,4"/>
+          </svg>
+
+          <p class="journal-paper-title">
+            AI-driven adaptive deception and threat intelligence
+          </p>
+          <p class="journal-meta">ISSN-1879-1719 · Article Id: JETM/9431</p>
+
+          <!-- circuit doodle inside journal card -->
+          <svg class="doodle" style="width:70px;height:50px;bottom:14px;right:14px;position:absolute;opacity:.25" viewBox="0 0 70 50">
+            <line x1="5" y1="10" x2="65" y2="10" stroke-dasharray="4,3"/>
+            <line x1="5" y1="25" x2="50" y2="25" stroke-dasharray="4,3"/>
+            <line x1="5" y1="40" x2="58" y2="40" stroke-dasharray="4,3"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       CONTACT BOARD
+  ════════════════════════════════════════ -->
+  <section style="min-height:50vh;padding-bottom:100px">
+    <div class="contact-board paper reveal">
+      <!-- Two corner pins -->
+      <svg class="pin" style="top:-14px;left:8%">
+        <use href="#pin-orange"/>
+      </svg>
+      <svg class="pin" style="top:-14px;right:8%">
+        <use href="#pin-blue"/>
+      </svg>
+
+      <!-- Section label tape -->
+      <div class="tape tape-blue" style="position:relative;display:inline-block;width:160px;transform:rotate(-1deg);margin-bottom:28px;font-size:.9rem">
+        📬 Let's Connect
+      </div>
+
+      <h2 class="section-title" style="text-align:center;display:block">
+        Let's Connect
+      </h2>
+      <p style="font-family:'Special Elite',monospace;font-size:.95rem;color:#555;margin-top:8px;margin-bottom:0">
+        Feel free to reach out — always open to collaborations and opportunities.
+      </p>
+
+      <div class="contact-links">
+        <a href="https://github.com/TjWhiteboy" target="_blank" class="contact-chip">
+          🐙 GitHub
+        </a>
+        <a href="http://linkedin.com/in/thikash-jayaprakash" target="_blank" class="contact-chip">
+          🔗 LinkedIn
+        </a>
+        <a href="mailto:thikashjayaprakash@gmail.com" class="contact-chip">
+          ✉️ thikashjayaprakash@gmail.com
+        </a>
+        <a href="tel:+919626435050" class="contact-chip">
+          📞 +91 96264 35050
+        </a>
+      </div>
+
+      <!-- Coffee cup doodle bottom-right -->
+      <svg class="doodle" style="width:65px;height:65px;position:absolute;bottom:16px;right:22px;opacity:.35" viewBox="0 0 65 65">
+        <path d="M18,28 L48,28 L44,56 L22,56 Z"/>
+        <path d="M48,34 C58,34 58,48 48,48"/>
+        <path d="M26,18 C26,12 30,12 30,7"/>
+        <path d="M33,20 C33,14 37,14 37,9"/>
+      </svg>
+
+      <!-- Geometric shapes doodle bottom-left -->
+      <svg class="doodle" style="width:60px;height:60px;position:absolute;bottom:18px;left:22px;opacity:.3" viewBox="0 0 60 60">
+        <polygon points="30,6 52,48 8,48"/>
+        <circle cx="30" cy="32" r="10"/>
+        <rect x="20" y="22" width="20" height="20" rx="2" stroke-dasharray="3,2"/>
+      </svg>
+    </div>
+  </section>
+
+</div><!-- /content-overlay -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPT: Dismiss loading + Ransom letters + Scroll-reveal
+═══════════════════════════════════════════════════════════ -->
+<script>
+/* ── Dismiss loading screen quickly ── */
+const loadingEl = document.getElementById('loading');
+const barFill   = document.getElementById('bar-fill');
+
+let pct = 0;
+const loadInterval = setInterval(() => {
+  pct = Math.min(pct + 8, 100);
+  barFill.style.width = pct + '%';
+  if (pct >= 100) {
+    clearInterval(loadInterval);
+    setTimeout(() => {
+      loadingEl.style.opacity = '0';
+      setTimeout(() => loadingEl.style.display = 'none', 700);
+    }, 200);
+  }
+}, 40);
+
+/* ── Ransom Note Letter Splitter ──────────────────────────────
+   Wraps every character of .ransom-word elements in a <span>
+   cycling through 10 font/colour/rotation classes (rl-0…rl-9).
+   Spaces become invisible spacer spans.
+──────────────────────────────────────────────────────────── */
+function applyRansomEffect(selector) {
+  const VARIANTS = 10;
+  document.querySelectorAll(selector).forEach(el => {
+    const text = el.textContent;
+    el.textContent = '';
+    let counter = 0;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const span = document.createElement('span');
+      if (ch === ' ') {
+        span.className = 'rl rl-space';
+        span.setAttribute('aria-hidden', 'true');
+      } else {
+        const variant = counter % VARIANTS;
+        span.className = `rl rl-${variant}`;
+        span.textContent = ch;
+        counter++;
+      }
+      el.appendChild(span);
+    }
+  });
+}
+
+/* Apply to hero name and all section titles */
+applyRansomEffect('.hero-card h1');
+applyRansomEffect('.section-title');
+
+/* ── Scroll-Reveal Observer ── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.10 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>

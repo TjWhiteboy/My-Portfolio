@@ -227,34 +227,89 @@
   <section id="skills">
     <div class="edu-skills-grid">
 
-      <!-- Education — grid paper card -->
-      <div id="education" class="edu-card grid-paper paper reveal reveal-d1">
-        <svg class="clip" style="top:-22px;right:35px">
-          <use href="#clip"/>
-        </svg>
+      <!-- Left Column: Education + Achievements Slide Stack -->
+      <div class="edu-col">
+        <!-- Education — grid paper card -->
+        <div id="education" class="edu-card grid-paper paper reveal reveal-d1">
+          <svg class="clip" style="top:-22px;right:35px">
+            <use href="#clip"/>
+          </svg>
 
-        <h2 class="section-title">Education</h2>
+          <h2 class="section-title">Education</h2>
 
-        <div class="edu-entry reveal reveal-d2">
-          <h3>B.E CSE (AI &amp; ML)</h3>
-          <h4>VSB Engineering College, Karur</h4>
-          <span class="edu-meta">2023 – Present &nbsp;·&nbsp; CGPA: 7.6</span>
+          <div class="edu-entry reveal reveal-d2">
+            <h3>B.E CSE (AI &amp; ML)</h3>
+            <h4>VSB Engineering College, Karur</h4>
+            <span class="edu-meta">2023 – Present &nbsp;·&nbsp; CGPA: 7.6</span>
+          </div>
+
+          <hr class="edu-divider">
+
+          <div class="edu-entry reveal reveal-d3">
+            <h3>HSC &amp; SSLC</h3>
+            <h4>Mount Giris Matric Hr.Sec. School</h4>
+            <span class="edu-meta">2008 – 2023</span>
+          </div>
+
+          <!-- pencil doodle bottom-right -->
+          <svg class="doodle" style="width:55px;height:55px;bottom:12px;right:12px;position:absolute;opacity:.3" viewBox="0 0 55 55">
+            <rect x="22" y="4" width="11" height="38" rx="2" transform="rotate(10,27.5,23)"/>
+            <polygon points="22,42 33,42 27.5,52" transform="rotate(10,27.5,47)"/>
+            <line x1="22" y1="38" x2="33" y2="40" transform="rotate(10,27.5,39)"/>
+          </svg>
         </div>
 
-        <hr class="edu-divider">
+        <!-- Achievements — slide by slide card stack -->
+        <div id="achievements" class="achieve-card grid-paper paper reveal reveal-d2">
+          <svg class="pin" style="top:-14px;left:24px"><use href="#pin-orange"/></svg>
 
-        <div class="edu-entry reveal reveal-d3">
-          <h3>HSC &amp; SSLC</h3>
-          <h4>Mount Giris Matric Hr.Sec. School</h4>
-          <span class="edu-meta">2008 – 2023</span>
+          <div class="achieve-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <h2 class="section-title" style="margin-bottom:0">Achievements</h2>
+            <div class="achieve-nav" style="display:flex;gap:6px;">
+              <button onclick="prevAchieveSlide()" class="btn-achieve-nav" title="Previous Achievement">‹</button>
+              <button onclick="nextAchieveSlide()" class="btn-achieve-nav" title="Next Achievement">›</button>
+            </div>
+          </div>
+
+          <!-- Slide Container -->
+          <div class="achieve-slider-wrapper">
+            <!-- Slide 1 -->
+            <div class="achieve-slide active">
+              <div class="achieve-badge" style="background:#FFE6A7">🏆 Research Publication</div>
+              <h3>AI Deception &amp; Threat Intelligence</h3>
+              <p>Authored and published research paper on AI-driven adaptive deception in threat intelligence (ISSN-1879-1719).</p>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="achieve-slide">
+              <div class="achieve-badge" style="background:#D0E8FF">⭐ Full Stack Internship</div>
+              <h3>Infosys Springboard Top Performer</h3>
+              <p>Successfully completed 6.0 Springboard internship specializing in Java, Spring Boot, and MySQL web applications.</p>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="achieve-slide">
+              <div class="achieve-badge" style="background:#FFD6E8">🚀 AI &amp; ML Innovation</div>
+              <h3>AgriSense &amp; InfoMind Projects</h3>
+              <p>Developed full-stack web applications leveraging Generative AI APIs for smart agriculture &amp; automated news intelligence.</p>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="achieve-slide">
+              <div class="achieve-badge" style="background:#D6F5D6">🎓 Professional Certifications</div>
+              <h3>Nasscom &amp; Cisco Certified</h3>
+              <p>Earned specialized certifications in Generative AI Fluency, Java Foundation, and IoT Digital Transformation.</p>
+            </div>
+          </div>
+
+          <!-- Slide Dots -->
+          <div class="achieve-dots" style="display:flex;justify-content:center;gap:6px;margin-top:14px;">
+            <span class="achieve-dot active" onclick="setAchieveSlide(0)"></span>
+            <span class="achieve-dot" onclick="setAchieveSlide(1)"></span>
+            <span class="achieve-dot" onclick="setAchieveSlide(2)"></span>
+            <span class="achieve-dot" onclick="setAchieveSlide(3)"></span>
+          </div>
         </div>
-
-        <!-- pencil doodle bottom-right -->
-        <svg class="doodle" style="width:55px;height:55px;bottom:12px;right:12px;position:absolute;opacity:.3" viewBox="0 0 55 55">
-          <rect x="22" y="4" width="11" height="38" rx="2" transform="rotate(10,27.5,23)"/>
-          <polygon points="22,42 33,42 27.5,52" transform="rotate(10,27.5,47)"/>
-          <line x1="22" y1="38" x2="33" y2="40" transform="rotate(10,27.5,39)"/>
-        </svg>
       </div>
 
       <!-- Skills — coloured sticky notes -->
@@ -692,6 +747,21 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.08 });
+
+let currentAchieveIndex = 0;
+function showAchieveSlide(index) {
+  const slides = document.querySelectorAll('.achieve-slide');
+  const dots = document.querySelectorAll('.achieve-dot');
+  if (!slides.length) return;
+  if (index >= slides.length) currentAchieveIndex = 0;
+  else if (index < 0) currentAchieveIndex = slides.length - 1;
+  else currentAchieveIndex = index;
+  slides.forEach((slide, i) => slide.classList.toggle('active', i === currentAchieveIndex));
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === currentAchieveIndex));
+}
+function nextAchieveSlide() { showAchieveSlide(currentAchieveIndex + 1); }
+function prevAchieveSlide() { showAchieveSlide(currentAchieveIndex - 1); }
+function setAchieveSlide(index) { showAchieveSlide(index); }
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>

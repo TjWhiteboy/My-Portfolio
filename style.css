@@ -697,19 +697,33 @@ section {
 .exp-timeline {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 24px;
   position: relative;
-  padding-left: 20px;
+  padding-left: 24px;
 }
 
 .exp-timeline::before {
   content: '';
   position: absolute;
-  left: 0; top: 10px; bottom: 10px;
+  left: 6px; top: 12px; bottom: 12px;
   width: 2px;
-  background: var(--navy);
-  border-left: 2px stroke-dasharray(4,3);
-  opacity: 0.4;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.exp-card-wrap {
+  position: relative;
+}
+
+.exp-node {
+  position: absolute;
+  left: -24px;
+  top: 24px;
+  width: 14px;
+  height: 14px;
+  background: var(--orange);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(232, 98, 26, 0.25);
+  z-index: 10;
 }
 
 .exp-card {
@@ -717,18 +731,71 @@ section {
   box-shadow: var(--shadow-lg);
   position: relative;
   border: 1px solid rgba(0,0,0,0.04);
-  margin-left: 20px;
 }
-.exp-card:nth-child(1) { transform: rotate(0.6deg); }
-.exp-card:nth-child(3) { transform: rotate(-0.5deg); }
+.exp-card:nth-child(1) { transform: rotate(0.4deg); }
+.exp-card:nth-child(2) { transform: rotate(-0.4deg); }
 .exp-card:hover { transform: rotate(0deg) !important; box-shadow: var(--shadow-lg); z-index: 10; transition: 0.3s; }
 
-.exp-card h3 {
-  font-family: var(--sketch);
-  font-size: 1.4rem;
-  color: var(--navy);
+.exp-card-inner {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (max-width: 650px) {
+  .exp-card-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .exp-logo-box {
+    border-right: none;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+    padding-right: 0;
+    padding-bottom: 12px;
+    width: 100%;
+    align-items: flex-start;
+  }
+}
+
+.exp-logo-box {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-right: 20px;
+  border-right: 1px dashed rgba(0, 0, 0, 0.15);
+}
+
+.exp-content {
+  flex: 1;
+}
+
+.exp-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 4px;
 }
+
+.exp-header-row h3 {
+  font-family: var(--sketch);
+  font-size: 1.35rem;
+  color: var(--navy);
+  margin-bottom: 0;
+}
+
+.exp-date {
+  font-family: var(--type);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: 0.5px;
+}
+
 .exp-card h4 {
   font-family: var(--type);
   font-size: 0.92rem;

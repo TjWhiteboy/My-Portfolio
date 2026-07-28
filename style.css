@@ -346,6 +346,7 @@ section {
 .sticky-p  { background: var(--sticky-pink); }
 .sticky-b  { background: var(--sticky-blue); }
 .sticky-g  { background: var(--sticky-green); }
+.sticky-v  { background: #E6D5FF; }
 
 /* ── Skill Tags inside Stickies ───────────────────────────── */
 .skill-pill {

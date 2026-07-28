@@ -259,55 +259,42 @@
           </svg>
         </div>
 
-        <!-- Achievements — slide by slide card stack -->
-        <div id="achievements" class="achieve-card grid-paper paper reveal reveal-d2">
-          <svg class="pin" style="top:-14px;left:24px"><use href="#pin-orange"/></svg>
+        <!-- Achievements — Overlapping Polaroids Stack -->
+        <div id="achievements" class="reveal reveal-d2" style="margin-top:20px;">
+          <h2 class="section-title">Achievements</h2>
 
-          <div class="achieve-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-            <h2 class="section-title" style="margin-bottom:0">Achievements</h2>
-            <div class="achieve-nav" style="display:flex;gap:6px;">
-              <button onclick="prevAchieveSlide()" class="btn-achieve-nav" title="Previous Achievement">‹</button>
-              <button onclick="nextAchieveSlide()" class="btn-achieve-nav" title="Next Achievement">›</button>
-            </div>
-          </div>
+          <div class="cert-stack" style="margin-top:20px;height:380px;">
+            <svg class="clip" style="position:absolute;top:-18px;left:140px;z-index:20"><use href="#clip"/></svg>
 
-          <!-- Slide Container -->
-          <div class="achieve-slider-wrapper">
-            <!-- Slide 1 -->
-            <div class="achieve-slide active">
-              <div class="achieve-badge" style="background:#FFE6A7">🏆 Research Publication</div>
-              <h3>AI Deception &amp; Threat Intelligence</h3>
-              <p>Authored and published research paper on AI-driven adaptive deception in threat intelligence (ISSN-1879-1719).</p>
-            </div>
+            <!-- Ach 1: Mumbai Hacks 2025 -->
+            <a href="https://drive.google.com/file/d/1lWRAU0-u9OCp0DrN-PCTRyPkEMIh2cUm/view?usp=sharing" target="_blank" class="cert-pol" style="text-decoration:none;width:300px;">
+              <div class="cert-pol-face" style="height:190px;background:#FFFDF0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;">
+                <svg viewBox="0 0 24 24" style="width:38px;height:38px;stroke:var(--orange);stroke-width:1.8;fill:none;margin-bottom:8px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+                <p style="font-family:var(--sketch);font-size:1.2rem;color:var(--navy);font-weight:bold;margin-bottom:4px;">Mumbai Hacks 2025</p>
+                <p style="font-family:var(--type);font-size:0.82rem;color:#555;">National Level Hackathon Certificate</p>
+              </div>
+              <div class="cert-label">Mumbai Hacks 2025</div>
+            </a>
 
-            <!-- Slide 2 -->
-            <div class="achieve-slide">
-              <div class="achieve-badge" style="background:#D0E8FF">⭐ Full Stack Internship</div>
-              <h3>Infosys Springboard Top Performer</h3>
-              <p>Successfully completed 6.0 Springboard internship specializing in Java, Spring Boot, and MySQL web applications.</p>
-            </div>
+            <!-- Ach 2: ET-AI Hackathon 2026 -->
+            <a href="https://drive.google.com/file/d/12Z0WE_Z2X7_XlWqq2aILdQKZ4pPYOlpy/view?usp=sharing" target="_blank" class="cert-pol" style="text-decoration:none;width:300px;">
+              <div class="cert-pol-face" style="height:190px;background:#F4F8FF;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;">
+                <svg viewBox="0 0 24 24" style="width:38px;height:38px;stroke:var(--blue);stroke-width:1.8;fill:none;margin-bottom:8px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <p style="font-family:var(--sketch);font-size:1.2rem;color:var(--navy);font-weight:bold;margin-bottom:4px;">ET-AI Hackathon 2026</p>
+                <p style="font-family:var(--type);font-size:0.82rem;color:#555;">AI &amp; ML Hackathon Certificate</p>
+              </div>
+              <div class="cert-label">ET-AI Hackathon</div>
+            </a>
 
-            <!-- Slide 3 -->
-            <div class="achieve-slide">
-              <div class="achieve-badge" style="background:#FFD6E8">🚀 AI &amp; ML Innovation</div>
-              <h3>AgriSense &amp; InfoMind Projects</h3>
-              <p>Developed full-stack web applications leveraging Generative AI APIs for smart agriculture &amp; automated news intelligence.</p>
-            </div>
-
-            <!-- Slide 4 -->
-            <div class="achieve-slide">
-              <div class="achieve-badge" style="background:#D6F5D6">🎓 Professional Certifications</div>
-              <h3>Nasscom &amp; Cisco Certified</h3>
-              <p>Earned specialized certifications in Generative AI Fluency, Java Foundation, and IoT Digital Transformation.</p>
-            </div>
-          </div>
-
-          <!-- Slide Dots -->
-          <div class="achieve-dots" style="display:flex;justify-content:center;gap:6px;margin-top:14px;">
-            <span class="achieve-dot active" onclick="setAchieveSlide(0)"></span>
-            <span class="achieve-dot" onclick="setAchieveSlide(1)"></span>
-            <span class="achieve-dot" onclick="setAchieveSlide(2)"></span>
-            <span class="achieve-dot" onclick="setAchieveSlide(3)"></span>
+            <!-- Ach 3: CodeEmy Ambassador -->
+            <a href="https://drive.google.com/file/d/1DOX2yXH7z7ObNI6su6Ke4uxQiN77mLdl/view?usp=sharing" target="_blank" class="cert-pol" style="text-decoration:none;width:300px;">
+              <div class="cert-pol-face" style="height:190px;background:#F0FDF4;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;">
+                <svg viewBox="0 0 24 24" style="width:38px;height:38px;stroke:#16a34a;stroke-width:1.8;fill:none;margin-bottom:8px;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                <p style="font-family:var(--sketch);font-size:1.2rem;color:var(--navy);font-weight:bold;margin-bottom:4px;">Campus Ambassador</p>
+                <p style="font-family:var(--type);font-size:0.82rem;color:#555;">CodeEmy Leadership Recognition</p>
+              </div>
+              <div class="cert-label">CodeEmy Ambassador</div>
+            </a>
           </div>
         </div>
       </div>
